@@ -29,13 +29,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding.buttonLogin.setOnClickListener(this)
         binding.textRegister.setOnClickListener(this)
 
+        viewModel.verifyLoggedUser()
+
         // Observadores
         observe()
     }
 
     override fun onClick(v: View) {
         if (v.id == R.id.button_login) {
-          handleLogin()
+            handleLogin()
         }
     }
 
@@ -50,9 +52,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.login.observe(this) {
             if (it.status()) {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
             } else {
                 Toast.makeText(this, it.message(), Toast.LENGTH_SHORT).show()
             }
         }
+
+        viewModel.authenticatedUser.observe(this) {
+            if (it) {
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
+            }
+        }
     }
+
+
 }
