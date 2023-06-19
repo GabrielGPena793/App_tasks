@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.devmasterteam.tasks.R
 import com.devmasterteam.tasks.databinding.ActivityTaskFormBinding
+import com.devmasterteam.tasks.service.model.PriorityModel
+import com.devmasterteam.tasks.service.model.TaskModel
 import com.devmasterteam.tasks.viewmodel.TaskFormViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -20,6 +22,7 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     private lateinit var viewModel: TaskFormViewModel
     private lateinit var binding: ActivityTaskFormBinding
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+    private var listPriority: List<PriorityModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,17 +42,11 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
         setContentView(binding.root)
     }
 
-    private fun observer() {
-        viewModel.priorityList.observe(this) {priorities ->
-            val array = priorities.map { it.description }
-            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, array)
-            binding.spinnerPriority.adapter = adapter
-        }
-    }
-
     override fun onClick(v: View) {
         if (v.id == R.id.button_date) {
             handleDate()
+        } else if (v.id == R.id.button_save) {
+            handleSave()
         }
     }
 
@@ -59,6 +56,29 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
 
         val dueDate = dateFormat.format(calendar.time)
         binding.buttonDate.text = dueDate
+    }
+
+    private fun observer() {
+        viewModel.priorityList.observe(this) {priorities ->
+            listPriority = priorities
+            val array = priorities.map { it.description }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, array)
+            binding.spinnerPriority.adapter = adapter
+        }
+    }
+
+    private fun handleSave() {
+        val task = TaskModel().apply {
+            this.id = 0
+            this.description = binding.editDescription.text.toString()
+            this.dueDate = binding.buttonDate.text.toString()
+            this.complete = binding.checkComplete.isChecked
+
+            val index = binding.spinnerPriority.selectedItemPosition
+            this.priorityId = listPriority[index].id
+        }
+
+        viewModel.save(task)
     }
 
     private fun handleDate() {
