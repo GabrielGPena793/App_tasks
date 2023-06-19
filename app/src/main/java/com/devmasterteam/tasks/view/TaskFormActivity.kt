@@ -3,6 +3,7 @@ package com.devmasterteam.tasks.view
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -31,8 +32,19 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
         binding.buttonSave.setOnClickListener(this)
         binding.buttonDate.setOnClickListener(this)
 
+        observer()
+
+        viewModel.loadPriority()
         // Layout
         setContentView(binding.root)
+    }
+
+    private fun observer() {
+        viewModel.priorityList.observe(this) {priorities ->
+            val array = priorities.map { it.description }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, array)
+            binding.spinnerPriority.adapter = adapter
+        }
     }
 
     override fun onClick(v: View) {
