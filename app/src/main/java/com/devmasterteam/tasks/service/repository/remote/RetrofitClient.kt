@@ -20,8 +20,8 @@ class RetrofitClient private constructor() {
             http.addInterceptor { chain ->
                 val request = chain.request()
                     .newBuilder()
-                    .addHeader(TaskConstants.HEADER.PERSON_KEY, token)
-                    .addHeader(TaskConstants.HEADER.TOKEN_KEY, personKey)
+                    .addHeader(TaskConstants.HEADER.PERSON_KEY, personKey)
+                    .addHeader(TaskConstants.HEADER.TOKEN_KEY, token)
                     .build()
 
                 chain.proceed(request)

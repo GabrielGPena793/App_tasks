@@ -35,7 +35,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
                 securityPreferences.store(TaskConstants.SHARED.PERSON_KEY, result.personKey)
                 securityPreferences.store(TaskConstants.SHARED.TOKEN_KEY, result.token)
-                securityPreferences.store(TaskConstants.SHARED.PERSON_KEY, result.name)
+                securityPreferences.store(TaskConstants.SHARED.PERSON_NAME, result.name)
 
                 RetrofitClient.addHeaders(result.token, result.personKey)
 
