@@ -1,16 +1,10 @@
 package com.devmasterteam.tasks.service.repository
 
 import android.content.Context
-import com.devmasterteam.tasks.R
-import com.devmasterteam.tasks.service.constants.TaskConstants
 import com.devmasterteam.tasks.service.listener.APIListener
 import com.devmasterteam.tasks.service.model.TaskModel
 import com.devmasterteam.tasks.service.repository.remote.RetrofitClient
 import com.devmasterteam.tasks.service.repository.remote.TaskService
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class TaskRepository(val context: Context): BaseRepository() {
 
@@ -19,15 +13,21 @@ class TaskRepository(val context: Context): BaseRepository() {
     fun create(task: TaskModel, listener: APIListener<Boolean>) {
 
         val call = remote.create(task.priorityId, task.description, task.dueDate, task.complete)
+        handleRequest(context, call, listener)
+    }
 
-        call.enqueue(object : Callback<Boolean> {
-            override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                handleResponse(response, listener)
-            }
+    fun list(listener: APIListener<List<TaskModel>>) {
+        val call = remote.list()
+        handleRequest(context, call, listener)
+    }
 
-            override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
-            }
-        })
+    fun listNext(listener: APIListener<List<TaskModel>>) {
+        val call = remote.listNext()
+        handleRequest(context, call, listener)
+    }
+
+    fun listOverDue(listener: APIListener<List<TaskModel>>) {
+        val call = remote.listOverDue()
+        handleRequest(context, call, listener)
     }
 }
