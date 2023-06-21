@@ -19,8 +19,18 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
     private val _tasks = MutableLiveData<List<TaskModel>>()
     val tasks: LiveData<List<TaskModel>> = _tasks
 
-    private val _delete = MutableLiveData<ValidationModel>()
-    val delete: LiveData<ValidationModel> = _delete
+    private val _validation = MutableLiveData<ValidationModel>()
+    val validation : LiveData<ValidationModel> = _validation
+
+    private val utilComumLister = object : APIListener<Boolean> {
+        override fun onSucess(result: Boolean) {
+            list()
+        }
+
+        override fun onFailure(message: String) {
+            _validation.value = ValidationModel(message)
+        }
+    }
 
     fun list() {
         taskRepository.list(object : APIListener<List<TaskModel>> {
@@ -38,16 +48,15 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun delete(id: Int) {
-        taskRepository.delete(id, object : APIListener<Boolean> {
-            override fun onSucess(result: Boolean) {
-                list()
-            }
+        taskRepository.delete(id, utilComumLister)
+    }
 
-            override fun onFailure(message: String) {
-                _delete.value = ValidationModel(message)
-            }
+    fun completeTask(id: Int) {
+        taskRepository.completeTask(id, utilComumLister)
+    }
 
-        })
+    fun undoTask(id: Int) {
+        taskRepository.undoTask(id, utilComumLister)
     }
 
 }

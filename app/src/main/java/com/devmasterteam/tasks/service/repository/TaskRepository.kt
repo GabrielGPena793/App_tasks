@@ -36,4 +36,14 @@ class TaskRepository(context: Context): BaseRepository(context) {
         val call = remote.delete(id)
         handleRequest(call, listener)
     }
+
+    fun completeTask(id: Int, listener: APIListener<Boolean>) {
+        val call = remote.completeTask(id)
+        handleRequest(call, listener)
+    }
+
+    fun undoTask(id: Int, listener: APIListener<Boolean>) {
+        val call = remote.undoTask(id)
+        handleRequest(call, listener)
+    }
 }

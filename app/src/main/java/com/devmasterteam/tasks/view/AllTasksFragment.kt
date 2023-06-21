@@ -38,11 +38,11 @@ class AllTasksFragment : Fragment() {
             }
 
             override fun onCompleteClick(id: Int) {
-                TODO("Not yet implemented")
+               viewModel.completeTask(id)
             }
 
             override fun onUndoClick(id: Int) {
-                TODO("Not yet implemented")
+                viewModel.undoTask(id)
             }
 
         }
@@ -72,7 +72,7 @@ class AllTasksFragment : Fragment() {
             adapter.setList(it)
         }
 
-        viewModel.delete.observe(viewLifecycleOwner) {
+        viewModel.validation.observe(viewLifecycleOwner) {
             if (!it.status()) {
                 Toast.makeText(context, it.message(), Toast.LENGTH_SHORT).show()
             }
