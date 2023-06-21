@@ -30,4 +30,10 @@ class TaskRepository(val context: Context): BaseRepository() {
         val call = remote.listOverDue()
         handleRequest(context, call, listener)
     }
+
+    fun delete(id: Int, listener: APIListener<Boolean>) {
+
+        val call = remote.delete(id)
+        handleRequest(context, call, listener)
+    }
 }
