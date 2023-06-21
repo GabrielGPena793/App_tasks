@@ -10,13 +10,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PersonRepository(val context: Context): BaseRepository() {
+class PersonRepository(context: Context): BaseRepository(context) {
 
     private val api = RetrofitClient.createService(PersonService::class.java)
 
     fun login(email: String, password: String, listener: APIListener<PersonModel>) {
 
         val call = api.login(email, password)
-        handleRequest(context, call, listener)
+        handleRequest(call, listener)
     }
 }

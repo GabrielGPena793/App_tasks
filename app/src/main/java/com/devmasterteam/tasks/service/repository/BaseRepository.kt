@@ -9,13 +9,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-open class BaseRepository {
+open class BaseRepository(val context: Context) {
 
     private fun convertJson(json: String) : String {
         return Gson().fromJson(json, String::class.java)
     }
 
-    fun <T> handleRequest(context: Context, call: Call<T>, listener: APIListener<T>) {
+    fun <T> handleRequest(call: Call<T>, listener: APIListener<T>) {
         call.enqueue(object : Callback<T> {
             override fun onResponse(
                 call: Call<T>,
