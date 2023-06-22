@@ -24,7 +24,7 @@ interface TaskService {
     fun listOverDue(): Call<List<TaskModel>>
 
     @GET("Task/{id}")
-    fun getTaskById(@Path(value = "id", encoded = true) id: String): Call<List<TaskModel>>
+    fun getTaskById(@Path(value = "id", encoded = true) id: Int): Call<TaskModel>
 
     @POST("Task")
     @FormUrlEncoded

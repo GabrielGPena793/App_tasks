@@ -1,5 +1,6 @@
 package com.devmasterteam.tasks.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.devmasterteam.tasks.databinding.FragmentAllTasksBinding
+import com.devmasterteam.tasks.service.constants.TaskConstants
 import com.devmasterteam.tasks.service.listener.TaskListener
 import com.devmasterteam.tasks.view.adapter.TaskAdapter
 import com.devmasterteam.tasks.viewmodel.TaskListViewModel
@@ -30,7 +32,11 @@ class AllTasksFragment : Fragment() {
 
         val listener = object : TaskListener {
             override fun onListClick(id: Int) {
-                TODO("Not yet implemented")
+                val intent = Intent(context, TaskFormActivity::class.java)
+                val bundle = Bundle()
+                bundle.putInt(TaskConstants.BUNDLE.TASKID, id)
+                intent.putExtras(bundle)
+                startActivity(intent)
             }
 
             override fun onDeleteClick(id: Int) {

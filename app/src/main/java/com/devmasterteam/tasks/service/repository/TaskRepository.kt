@@ -6,7 +6,7 @@ import com.devmasterteam.tasks.service.model.TaskModel
 import com.devmasterteam.tasks.service.repository.remote.RetrofitClient
 import com.devmasterteam.tasks.service.repository.remote.TaskService
 
-class TaskRepository(context: Context): BaseRepository(context) {
+class TaskRepository(context: Context) : BaseRepository(context) {
 
     private val remote = RetrofitClient.createService(TaskService::class.java)
 
@@ -44,6 +44,16 @@ class TaskRepository(context: Context): BaseRepository(context) {
 
     fun undoTask(id: Int, listener: APIListener<Boolean>) {
         val call = remote.undoTask(id)
+        handleRequest(call, listener)
+    }
+
+    fun updateTask(task: TaskModel, listener: APIListener<Boolean>) {
+        val call = remote.update(task.id, task.priorityId, task.description, task.dueDate, task.complete)
+        handleRequest(call, listener)
+    }
+
+    fun getTaskById(id: Int, listener: APIListener<TaskModel> ) {
+        val call = remote.getTaskById(id)
         handleRequest(call, listener)
     }
 }
