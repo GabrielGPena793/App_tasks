@@ -43,6 +43,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             }
 
             override fun onFailure(message: String) {
+                _validation.value = ValidationModel(message)
             }
         })
     }
