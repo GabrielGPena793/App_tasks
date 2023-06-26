@@ -35,10 +35,21 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         observe()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.verifyLoggedUser()
+    }
+
     override fun onClick(v: View) {
         if (v.id == R.id.button_login) {
             handleLogin()
+        } else if (v.id == R.id.text_register) {
+            handleRegister()
         }
+    }
+
+    private fun handleRegister() {
+        startActivity(Intent(this, RegisterActivity::class.java))
     }
 
     private fun handleLogin() {
