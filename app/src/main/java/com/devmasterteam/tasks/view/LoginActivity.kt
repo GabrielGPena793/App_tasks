@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.devmasterteam.tasks.R
 import com.devmasterteam.tasks.databinding.ActivityLoginBinding
+import com.devmasterteam.tasks.service.helper.BiometricHelper
 import com.devmasterteam.tasks.viewmodel.LoginViewModel
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -30,15 +33,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding.buttonLogin.setOnClickListener(this)
         binding.textRegister.setOnClickListener(this)
 
-        viewModel.verifyLoggedUser()
+        viewModel.verifyAuthentication()
 
         // Observadores
         observe()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.verifyLoggedUser()
     }
 
     override fun onClick(v: View) {
@@ -72,11 +70,35 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         viewModel.authenticatedUser.observe(this) {
             if (it) {
-                startActivity(Intent(applicationContext, MainActivity::class.java))
-                finish()
+                biometricAuthentication()
             }
         }
     }
 
+    private fun biometricAuthentication() {
+        // verifica se pode usar a biometria
+        if (BiometricHelper.isBiometricAvailable(this)) {
 
+            // Thread da aplicação
+            val executor = ContextCompat.getMainExecutor(this)
+            // Logica a ser executada ao interagir com a biomtria
+            val bio = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    startActivity(Intent(applicationContext, MainActivity::class.java))
+                    finish()
+                }
+            })
+
+            // Dados Parte visual da biometria
+            val info = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Titulo")
+                .setSubtitle("Sub titulo")
+                .setDescription("descrição")
+                .setNegativeButtonText("Cancelar")
+                .build()
+
+            bio.authenticate(info)
+        }
+    }
 }
